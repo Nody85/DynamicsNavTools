@@ -1,0 +1,51 @@
+OBJECT Page 66500 NAV Stuff
+{
+  OBJECT-PROPERTIES
+  {
+    Date=20.05.18;
+    Time=01:29:05;
+    Modified=Yes;
+    Version List=NAV STUFF;
+  }
+  PROPERTIES
+  {
+    SourceTable=Table66500;
+    PageType=Card;
+    OnInit=BEGIN
+             IF Rec.ISEMPTY THEN BEGIN
+               INIT;
+               INSERT;
+             END;
+           END;
+
+  }
+  CONTROLS
+  {
+    { 1000000000;0;Container;
+                ContainerType=ContentArea }
+
+    { 1000000001;1;Group  ;
+                Name=Allgemein;
+                GroupType=Group }
+
+    { 1000000002;2;Field  ;
+                SourceExpr="Log File Path";
+                OnAssistEdit=VAR
+                               FileManagement@1000000000 : Codeunit 419;
+                             BEGIN
+                               FileManagement.SelectFolderDialog(Text001,"Log File Path");
+                               MODIFY;
+                             END;
+                              }
+
+  }
+  CODE
+  {
+    VAR
+      Text001@1000000000 : TextConst 'DEU=Logpfad w„hlen.;ENU=Select Logpath.;DES=Logpfad w„hlen.;DEA=Logpfad w„hlen.';
+
+    BEGIN
+    END.
+  }
+}
+

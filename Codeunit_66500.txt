@@ -1,0 +1,63 @@
+OBJECT Codeunit 66500 Nav Stuff
+{
+  OBJECT-PROPERTIES
+  {
+    Date=20.05.18;
+    Time=01:45:11;
+    Modified=Yes;
+    Version List=NAV STUFF;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+
+    LOCAL PROCEDURE InitLog@1000000001() : Boolean;
+    VAR
+      LogFile@1000000001 : File;
+    BEGIN
+      IF NOT FILE.EXISTS(BuildFullLogfilePath) THEN BEGIN
+        LogFile.CREATE(BuildFullLogfilePath);
+        LogFile.CLOSE;
+      END;
+      EXIT(TRUE);
+    END;
+
+    LOCAL PROCEDURE BuildFullLogfilePath@1000000003() : Text;
+    VAR
+      NAVStuffSetup@1000000000 : Record 66500;
+    BEGIN
+      IF NAVStuffSetup.GET THEN BEGIN
+        NAVStuffSetup.TESTFIELD("Log File Path");
+        EXIT(NAVStuffSetup."Log File Path" + '\' + BuildLogfileName);
+      END;
+    END;
+
+    LOCAL PROCEDURE BuildLogfileName@1000000000() : Text;
+    BEGIN
+      EXIT(FORMAT(TODAY) + '.txt');
+    END;
+
+    PROCEDURE WriteLogFile@1000000002(LogMessage@1000000001 : Text);
+    VAR
+      Logfile@1000000000 : File;
+    BEGIN
+      IF InitLog THEN BEGIN
+        Logfile.TEXTMODE(TRUE);
+        Logfile.WRITEMODE(TRUE);
+        Logfile.OPEN(BuildFullLogfilePath);
+        Logfile.SEEK(Logfile.LEN);
+        Logfile.WRITE(FORMAT(TODAY) + ' '+ FORMAT(TIME) + ': ' + LogMessage);
+        Logfile.CLOSE;
+      END;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

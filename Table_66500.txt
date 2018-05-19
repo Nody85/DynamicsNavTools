@@ -1,0 +1,32 @@
+OBJECT Table 66500 NAV Stuff Setup
+{
+  OBJECT-PROPERTIES
+  {
+    Date=18.05.18;
+    Time=22:08:13;
+    Modified=Yes;
+    Version List=NAV STUFF;
+  }
+  PROPERTIES
+  {
+  }
+  FIELDS
+  {
+    { 10  ;   ;Code                ;Code10         }
+    { 20  ;   ;Log File Path       ;Text250        }
+  }
+  KEYS
+  {
+    {    ;Code                                    ;Clustered=Yes }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+
