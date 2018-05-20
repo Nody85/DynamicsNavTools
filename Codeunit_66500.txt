@@ -3,7 +3,7 @@ OBJECT Codeunit 66500 Nav Stuff
   OBJECT-PROPERTIES
   {
     Date=20.05.18;
-    Time=01:45:11;
+    Time=19:26:50;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -15,6 +15,8 @@ OBJECT Codeunit 66500 Nav Stuff
   }
   CODE
   {
+    VAR
+      Error001@1000000000 : TextConst 'DEU=Tabelle %1 EnthÑlt falsche Zeichen in Feld %2 definiert durch den SchlÅssel %3.;ENU=Table %1 contains illegal Signs in Field %2 defined by KeyValue %3.;DES=Tabelle %1 EnthÑlt falsche Zeichen in Feld %2 definiert durch den SchlÅssel %3.;DEA=Tabelle %1 EnthÑlt falsche Zeichen in Feld %2 definiert durch den SchlÅssel %3.';
 
     LOCAL PROCEDURE InitLog@1000000001() : Boolean;
     VAR
@@ -54,6 +56,69 @@ OBJECT Codeunit 66500 Nav Stuff
         Logfile.WRITE(FORMAT(TODAY) + ' '+ FORMAT(TIME) + ': ' + LogMessage);
         Logfile.CLOSE;
       END;
+    END;
+
+    PROCEDURE CheckTable@1000000004(TableID@1000000002 : Integer;OnlyIndexing@1000000003 : Boolean);
+    VAR
+      Object@1000000000 : Record 2000000001;
+      RecordReference@1000000001 : RecordRef;
+    BEGIN
+      Object.SETRANGE(Type,Object.Type::Table);
+      IF TableID <> 0 THEN
+        Object.SETRANGE(ID,TableID);
+      IF Object.FINDSET THEN
+        RecordReference.OPEN(Object.ID);
+        IF RecordReference.FINDSET THEN BEGIN
+          REPEAT
+            CheckFieldsFromRecord(RecordReference,OnlyIndexing);
+          UNTIL Object.NEXT = 0;
+        END;
+        RecordReference.CLOSE;
+    END;
+
+    LOCAL PROCEDURE CheckFieldsFromRecord@1000000007(RecordReference@1000000002 : RecordRef;OnlyIndexing@1000000003 : Boolean);
+    VAR
+      Field@1000000000 : Record 2000000041;
+      FieldReference@1000000001 : FieldRef;
+    BEGIN
+      Field.SETRANGE(TableNo,RecordReference.NUMBER);
+      Field.SETRANGE(Class,Field.Class::Normal);
+      IF Field.FINDSET THEN
+        REPEAT
+          IF Field.Type IN [Field.Type::Code,Field.Type::Text] THEN BEGIN
+            FieldReference := RecordReference.FIELD(Field."No.");
+            IndexSigns(FORMAT(FieldReference.VALUE));
+            IF NOT OnlyIndexing THEN BEGIN
+              IF ContainsForbiddenSigns(FORMAT(FieldReference.VALUE)) THEN
+                WriteLogFile(STRSUBSTNO(Error001,Field.TableNo,Field."No.",RecordReference.CURRENTKEY));
+            END;
+          END;
+        UNTIL Field.NEXT = 0;
+    END;
+
+    LOCAL PROCEDURE IndexSigns@1000000005(InputString@1000000000 : Text);
+    VAR
+      ForbiddenSigns@1000000001 : Record 66501;
+      StringLenght@1000000002 : Integer;
+      StringPosition@1000000003 : Integer;
+    BEGIN
+      FOR StringPosition := 1 TO STRLEN(InputString) DO BEGIN
+        IF NOT ForbiddenSigns.GET(COPYSTR(InputString,StringPosition,1)) THEN BEGIN
+          ForbiddenSigns.INIT;
+          ForbiddenSigns.Sign := COPYSTR(InputString,StringPosition,1);
+          ForbiddenSigns.INSERT;
+        END;
+      END;
+    END;
+
+    LOCAL PROCEDURE ContainsForbiddenSigns@1000000006(InputString@1000000001 : Text) : Boolean;
+    VAR
+      ForbiddenSigns@1000000000 : Record 66501;
+      StringPosition@1000000002 : Integer;
+    BEGIN
+      FOR StringPosition := 1 TO STRLEN(InputString) DO
+        IF ForbiddenSigns.GET(COPYSTR(InputString,StringPosition,1)) AND ForbiddenSigns.Forbidden THEN
+          EXIT(TRUE);
     END;
 
     BEGIN

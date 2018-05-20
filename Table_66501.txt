@@ -1,0 +1,32 @@
+OBJECT Table 66501 Forbidden Signs
+{
+  OBJECT-PROPERTIES
+  {
+    Date=20.05.18;
+    Time=02:20:57;
+    Modified=Yes;
+    Version List=NAV STUFF;
+  }
+  PROPERTIES
+  {
+  }
+  FIELDS
+  {
+    { 1   ;   ;Sign                ;Text30         }
+    { 2   ;   ;Forbidden           ;Boolean        }
+  }
+  KEYS
+  {
+    {    ;Sign                                    ;Clustered=Yes }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+
