@@ -3,7 +3,7 @@ OBJECT Codeunit 66500 Nav Stuff
   OBJECT-PROPERTIES
   {
     Date=20.05.18;
-    Time=19:26:50;
+    Time=21:22:47;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -67,13 +67,15 @@ OBJECT Codeunit 66500 Nav Stuff
       IF TableID <> 0 THEN
         Object.SETRANGE(ID,TableID);
       IF Object.FINDSET THEN
-        RecordReference.OPEN(Object.ID);
-        IF RecordReference.FINDSET THEN BEGIN
-          REPEAT
-            CheckFieldsFromRecord(RecordReference,OnlyIndexing);
-          UNTIL Object.NEXT = 0;
-        END;
-        RecordReference.CLOSE;
+        REPEAT
+          RecordReference.OPEN(Object.ID);
+          IF RecordReference.FINDSET THEN BEGIN
+            REPEAT
+              CheckFieldsFromRecord(RecordReference,OnlyIndexing);
+            UNTIL RecordReference.NEXT = 0;
+          END;
+          RecordReference.CLOSE;
+        UNTIL Object.NEXT = 0;
     END;
 
     LOCAL PROCEDURE CheckFieldsFromRecord@1000000007(RecordReference@1000000002 : RecordRef;OnlyIndexing@1000000003 : Boolean);
