@@ -2,8 +2,8 @@ OBJECT Codeunit 66500 Nav Stuff
 {
   OBJECT-PROPERTIES
   {
-    Date=20.05.18;
-    Time=21:22:47;
+    Date=22.05.18;
+    Time=16:39:40;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -92,7 +92,7 @@ OBJECT Codeunit 66500 Nav Stuff
             IndexSigns(FORMAT(FieldReference.VALUE));
             IF NOT OnlyIndexing THEN BEGIN
               IF ContainsForbiddenSigns(FORMAT(FieldReference.VALUE)) THEN
-                WriteLogFile(STRSUBSTNO(Error001,Field.TableNo,Field."No.",RecordReference.CURRENTKEY));
+                WriteLogFile(STRSUBSTNO(Error001,Field.TableNo,Field."No.",RecordReference.RECORDID));
             END;
           END;
         UNTIL Field.NEXT = 0;
