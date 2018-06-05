@@ -2,8 +2,8 @@ OBJECT Codeunit 66500 Nav Stuff
 {
   OBJECT-PROPERTIES
   {
-    Date=22.05.18;
-    Time=16:39:40;
+    Date=06.06.18;
+    Time=00:13:58;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -17,6 +17,8 @@ OBJECT Codeunit 66500 Nav Stuff
   {
     VAR
       Error001@1000000000 : TextConst 'DEU=Tabelle %1 EnthÑlt falsche Zeichen in Feld %2 definiert durch den SchlÅssel %3.;ENU=Table %1 contains illegal Signs in Field %2 defined by KeyValue %3.;DES=Tabelle %1 EnthÑlt falsche Zeichen in Feld %2 definiert durch den SchlÅssel %3.;DEA=Tabelle %1 EnthÑlt falsche Zeichen in Feld %2 definiert durch den SchlÅssel %3.';
+      Error002@1000000001 : TextConst 'DEU=Der Datentyp der Table %1 Feld %2 stimmt nicht mit dem Datentyp der Quelltabelle %3 Feld %4 Åberein.;ENU=The Datatype from Table %1 Field %2 is not equal with Sourcetable %3 Field %4.;DES=Der Datentyp der Table %1 Feld %2 stimmt nicht mit dem Datentyp der Quelltabelle %3 Feld %4 Åberein.;DEA=Der Datentyp der Table %1 Feld %2 stimmt nicht mit dem Datentyp der Quelltabelle %3 Feld %4 Åberein.';
+      Error003@1000000002 : TextConst 'DEU=Die FeldlÑnge der Table %1 Feld %2 stimmt nicht mit der FeldlÑnge der Quelltabelle %3 Feld %4 Åberein.;ENU=The Fieldlenght from Table %1 Field %2 is not equal with the Fieldlenght from Sourcetable %3 Field %4.;DES=Die FeldlÑnge der Table %1 Feld %2 stimmt nicht mit der FeldlÑnge der Quelltabelle %3 Feld %4 Åberein.;DEA=Die FeldlÑnge der Table %1 Feld %2 stimmt nicht mit der FeldlÑnge der Quelltabelle %3 Feld %4 Åberein.';
 
     LOCAL PROCEDURE InitLog@1000000001() : Boolean;
     VAR
@@ -121,6 +123,58 @@ OBJECT Codeunit 66500 Nav Stuff
       FOR StringPosition := 1 TO STRLEN(InputString) DO
         IF ForbiddenSigns.GET(COPYSTR(InputString,StringPosition,1)) AND ForbiddenSigns.Forbidden THEN
           EXIT(TRUE);
+    END;
+
+    PROCEDURE CheckTableRelation@1000000008(TableID@1000000000 : Integer) : Boolean;
+    VAR
+      TableRelationsMetadata@1000000001 : Record 2000000141;
+    BEGIN
+      IF TableID <> 0 THEN
+        TableRelationsMetadata.SETRANGE("Table ID",TableID);
+
+      IF TableRelationsMetadata.FINDSET THEN
+        REPEAT
+          IF NOT CompareRelationFieldDataType(TableRelationsMetadata."Table ID",
+                                              TableRelationsMetadata."Field No.",
+                                              TableRelationsMetadata."Related Table ID",
+                                              TableRelationsMetadata."Related Field No.")
+          THEN
+            WriteLogFile(STRSUBSTNO(Error002,
+                                    TableRelationsMetadata."Table ID",
+                                    TableRelationsMetadata."Field No.",
+                                    TableRelationsMetadata."Related Table ID",
+                                    TableRelationsMetadata."Related Field No."));
+          IF NOT CompareRelationFieldLenght(TableRelationsMetadata."Table ID",
+                                            TableRelationsMetadata."Field No.",
+                                            TableRelationsMetadata."Related Table ID",
+                                            TableRelationsMetadata."Related Field No.")
+          THEN
+            WriteLogFile(STRSUBSTNO(Error003,
+                                    TableRelationsMetadata."Table ID",
+                                    TableRelationsMetadata."Field No.",
+                                    TableRelationsMetadata."Related Table ID",
+                                    TableRelationsMetadata."Related Field No."));
+        UNTIL TableRelationsMetadata.NEXT = 0;
+    END;
+
+    LOCAL PROCEDURE CompareRelationFieldDataType@1000000009(TableID@1000000003 : Integer;FieldID@1000000002 : Integer;RelatedTableID@1000000001 : Integer;RelatedFieldNo@1000000000 : Integer) : Boolean;
+    VAR
+      Field@1000000004 : Record 2000000041;
+      RelationField@1000000005 : Record 2000000041;
+    BEGIN
+      Field.GET(TableID,FieldID);
+      RelationField.GET(RelatedTableID,RelatedFieldNo);
+      EXIT(Field.Type = RelationField.Type);
+    END;
+
+    LOCAL PROCEDURE CompareRelationFieldLenght@1000000010(TableID@1000000000 : Integer;FieldID@1000000001 : Integer;RelatedTableID@1000000002 : Integer;RelatedFieldNo@1000000003 : Integer) : Boolean;
+    VAR
+      Field@1000000005 : Record 2000000041;
+      RelationField@1000000004 : Record 2000000041;
+    BEGIN
+      Field.GET(TableID,FieldID);
+      RelationField.GET(RelatedTableID,RelatedFieldNo);
+      EXIT(Field.Len = RelationField.Len);
     END;
 
     BEGIN
