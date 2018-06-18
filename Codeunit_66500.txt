@@ -2,8 +2,8 @@ OBJECT Codeunit 66500 Nav Stuff
 {
   OBJECT-PROPERTIES
   {
-    Date=17.06.18;
-    Time=16:03:56;
+    Date=18.06.18;
+    Time=12:55:47;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -19,8 +19,11 @@ OBJECT Codeunit 66500 Nav Stuff
       Error001@1000000000 : TextConst 'DEU=Tabelle %1 EnthÑlt falsche Zeichen in Feld %2 definiert durch den SchlÅssel %3.;ENU=Table %1 contains illegal Signs in Field %2 defined by KeyValue %3.;DES=Tabelle %1 EnthÑlt falsche Zeichen in Feld %2 definiert durch den SchlÅssel %3.;DEA=Tabelle %1 EnthÑlt falsche Zeichen in Feld %2 definiert durch den SchlÅssel %3.';
       Error002@1000000001 : TextConst 'DEU=Der Datentyp der Table %1 Feld %2 stimmt nicht mit dem Datentyp der Quelltabelle %3 Feld %4 Åberein.;ENU=The Datatype from Table %1 Field %2 is not equal with Sourcetable %3 Field %4.;DES=Der Datentyp der Table %1 Feld %2 stimmt nicht mit dem Datentyp der Quelltabelle %3 Feld %4 Åberein.;DEA=Der Datentyp der Table %1 Feld %2 stimmt nicht mit dem Datentyp der Quelltabelle %3 Feld %4 Åberein.';
       Error003@1000000002 : TextConst 'DEU=Die FeldlÑnge der Table %1 Feld %2 stimmt nicht mit der FeldlÑnge der Quelltabelle %3 Feld %4 Åberein.;ENU=The Fieldlenght from Table %1 Field %2 is not equal with the Fieldlenght from Sourcetable %3 Field %4.;DES=Die FeldlÑnge der Table %1 Feld %2 stimmt nicht mit der FeldlÑnge der Quelltabelle %3 Feld %4 Åberein.;DEA=Die FeldlÑnge der Table %1 Feld %2 stimmt nicht mit der FeldlÑnge der Quelltabelle %3 Feld %4 Åberein.';
+      Error004@1000000005 : TextConst 'DEU=Die TableRellation von Tabelle %1 Feld %2 zur Quelltabelle %3 Feld %4 ist ungÅltig.;ENU=The TableRelation from Table %1 Field %2 to SourceTable %3 Field %4 is invalide.;DES=Die TableRellation von Tabelle %1 Feld %2 zur Quelltabelle %3 Feld %4 ist ungÅltig.;DEA=Die TableRellation von Tabelle %1 Feld %2 zur Quelltabelle %3 Feld %4 ist ungÅltig.';
       CheckTableStart@1000000004 : TextConst 'DEU=Funktion CheckTable gestartet.;ENU=Function CheckTable started.;DES=Funktion CheckTable gestartet.;DEA=Funktion CheckTable gestartet.';
       CheckTableSuccess@1000000003 : TextConst 'DEU=Funktion CheckTable abgeschlossen.;ENU=Function CheckTable completed.;DES=Funktion CheckTable abgeschlossen.;DEA=Funktion CheckTable abgeschlossen.';
+      CheckTableRelationStart@1000000007 : TextConst 'DEU=Funktion CheckTableRelations gestartet.;ENU=Function CheckTableRelations started.;DES=Funktion CheckTableRelations gestartet.;DEA=Funktion CheckTableRelations gestartet.';
+      CheckTableRelationSuccess@1000000006 : TextConst 'DEU=Funktion CheckTableRelations abgeschlossen.;ENU=Function CheckTableRelations completed.;DES=Funktion CheckTableRelations abgeschlossen.;DEA=Funktion CheckTableRelations abgeschlossen.';
 
     LOCAL PROCEDURE InitLog@1000000001() : Boolean;
     VAR
@@ -137,9 +140,12 @@ OBJECT Codeunit 66500 Nav Stuff
     VAR
       TableRelationsMetadata@1000000001 : Record 2000000141;
     BEGIN
+      WriteLogFile(CheckTableRelationStart);
+
       IF TableID <> 0 THEN
         TableRelationsMetadata.SETRANGE("Table ID",TableID);
 
+      TableRelationsMetadata.SETRANGE("Validate Table Relation",TRUE);
       IF TableRelationsMetadata.FINDSET THEN
         REPEAT
           IF NOT CompareRelationFieldDataType(TableRelationsMetadata."Table ID",
@@ -163,6 +169,8 @@ OBJECT Codeunit 66500 Nav Stuff
                                     TableRelationsMetadata."Related Table ID",
                                     TableRelationsMetadata."Related Field No."));
         UNTIL TableRelationsMetadata.NEXT = 0;
+
+      WriteLogFile(CheckTableRelationSuccess);
     END;
 
     LOCAL PROCEDURE CompareRelationFieldDataType@1000000009(TableID@1000000003 : Integer;FieldID@1000000002 : Integer;RelatedTableID@1000000001 : Integer;RelatedFieldNo@1000000000 : Integer) : Boolean;
@@ -171,7 +179,11 @@ OBJECT Codeunit 66500 Nav Stuff
       RelationField@1000000005 : Record 2000000041;
     BEGIN
       Field.GET(TableID,FieldID);
-      RelationField.GET(RelatedTableID,RelatedFieldNo);
+      IF NOT RelationField.GET(RelatedTableID,RelatedFieldNo) THEN BEGIN
+        WriteLogFile(Error004);
+        EXIT(FALSE);
+      END;
+
       EXIT(Field.Type = RelationField.Type);
     END;
 
@@ -181,7 +193,10 @@ OBJECT Codeunit 66500 Nav Stuff
       RelationField@1000000004 : Record 2000000041;
     BEGIN
       Field.GET(TableID,FieldID);
-      RelationField.GET(RelatedTableID,RelatedFieldNo);
+      IF NOT RelationField.GET(RelatedTableID,RelatedFieldNo) THEN BEGIN
+        WriteLogFile(Error004);
+        EXIT(FALSE);
+      END;
       EXIT(Field.Len = RelationField.Len);
     END;
 
