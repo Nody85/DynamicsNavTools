@@ -1,0 +1,47 @@
+OBJECT Table 66502 Duplicates Index
+{
+  OBJECT-PROPERTIES
+  {
+    Date=19.06.18;
+    Time=19:05:05;
+    Modified=Yes;
+    Version List=NAV STUFF;
+  }
+  PROPERTIES
+  {
+    CaptionML=[DEU=Dubletten Index;
+               ENU=Duplicates Index;
+               DES=Dubletten Index;
+               DEA=Dubletten Index];
+    LookupPageID=Page66501;
+    DrillDownPageID=Page66501;
+  }
+  FIELDS
+  {
+    { 1   ;   ;Key                 ;Text250        }
+    { 2   ;   ;TableID             ;Integer        }
+    { 3   ;   ;FieldID             ;Integer        }
+    { 4   ;   ;Field Value         ;Text250        }
+    { 5   ;   ;Encoded Value       ;Code100        }
+    { 6   ;   ;Information Type    ;Code20         }
+    { 7   ;   ;PossibleDuplicates  ;Integer       ;FieldClass=FlowField;
+                                                   CalcFormula=Count("Duplicates Index" WHERE (Encoded Value=FIELD(Encoded Value),
+                                                                                               Information Type=FIELD(Information Type),
+                                                                                               FieldID=FIELD(FieldID))) }
+  }
+  KEYS
+  {
+    {    ;Key,TableID,FieldID                     ;Clustered=Yes }
+    {    ;Encoded Value,Information Type           }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

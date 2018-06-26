@@ -1,0 +1,53 @@
+OBJECT Page 66501 Duplicated Indexes
+{
+  OBJECT-PROPERTIES
+  {
+    Date=19.06.18;
+    Time=19:06:36;
+    Modified=Yes;
+    Version List=NAV STUFF;
+  }
+  PROPERTIES
+  {
+    SourceTable=Table66502;
+    PageType=List;
+  }
+  CONTROLS
+  {
+    { 1000000000;0;Container;
+                ContainerType=ContentArea }
+
+    { 1000000001;1;Group  ;
+                Name=Group;
+                GroupType=Repeater }
+
+    { 1000000002;2;Field  ;
+                SourceExpr=Key }
+
+    { 1000000003;2;Field  ;
+                SourceExpr=TableID }
+
+    { 1000000004;2;Field  ;
+                SourceExpr=FieldID }
+
+    { 1000000005;2;Field  ;
+                SourceExpr="Field Value" }
+
+    { 1000000006;2;Field  ;
+                SourceExpr="Encoded Value" }
+
+    { 1000000007;2;Field  ;
+                SourceExpr="Information Type" }
+
+    { 1000000008;2;Field  ;
+                SourceExpr=PossibleDuplicates }
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

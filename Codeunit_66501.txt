@@ -1,0 +1,191 @@
+OBJECT Codeunit 66501 Fuzzy Search
+{
+  OBJECT-PROPERTIES
+  {
+    Date=21.06.18;
+    Time=01:02:49;
+    Modified=Yes;
+    Version List=NAV STUFF;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+
+    PROCEDURE ConvertStringToPhonetic@1000000000(InputString@1000000000 : Text) ResultString : Text;
+    VAR
+      i@1000000001 : Integer;
+    BEGIN
+      InputString := UPPERCASE(InputString);
+      FOR i := 1 TO STRLEN(InputString) DO BEGIN
+        CASE COPYSTR(InputString,i,1) OF
+          'A','E','I','O','U','Y','Ž','™','š','á':
+            ResultString += '0';
+          'B','P':
+            ResultString += '1';
+          'D','T':
+            ResultString += '2';
+          'F','V','W':
+            ResultString += '3';
+          'G','K','Q','C','X':
+            ResultString += '4';
+          'L':
+            ResultString += '5';
+          'M','N':
+            ResultString += '6';
+          'R':
+            ResultString += '7';
+          'S','Z':
+            ResultString += '8';
+          'H':
+            ResultString += '9';
+        END;
+      END;
+      ResultString := EleminateDoubleSigns(ResultString);
+      EXIT(DeleteNullSignAfterFirstPlace(ResultString));
+    END;
+
+    PROCEDURE ConvertToSoundEx@1000000002(InputString@1000000000 : Text) ResultString : Text;
+    VAR
+      i@1000000001 : Integer;
+    BEGIN
+      InputString := UPPERCASE(InputString);
+      FOR i := 1 TO STRLEN(InputString) DO BEGIN
+        CASE COPYSTR(InputString,i,1) OF
+          'B','F','P','V':
+            ResultString += '1';
+          'C','G','J','K','Q','S','X','Z':
+            ResultString += '2';
+          'D','T':
+            ResultString += '3';
+          'L':
+            ResultString += '4';
+          'M','N':
+            ResultString += '5';
+          'R':
+            ResultString += '6';
+          'A','E','I','O','U','H','W','Y':
+            ResultString += '7';
+          ELSE
+            ResultString += '0';
+        END;
+      END;
+      ResultString := EleminateDoubleSigns(ResultString);
+    END;
+
+    LOCAL PROCEDURE EleminateDoubleSigns@1000000001(InputString@1000000000 : Text) ResultString : Text;
+    VAR
+      i@1000000001 : Integer;
+      LastSign@1000000002 : Text[1];
+    BEGIN
+      InputString := UPPERCASE(InputString);
+      FOR i := 1 TO STRLEN(InputString) DO BEGIN
+        IF LastSign <> COPYSTR(InputString,i,1) THEN BEGIN
+          LastSign := COPYSTR(InputString,i,1);
+          ResultString  += LastSign;
+        END;
+      END;
+    END;
+
+    PROCEDURE IndexTable@1000000003(TableID@1000000000 : Integer;FieldID@1000000006 : Integer);
+    VAR
+      AllObj@1000000001 : Record 2000000038;
+      RecordReference@1000000002 : RecordRef;
+      FieldReference@1000000003 : FieldRef;
+      Field@1000000004 : Record 2000000041;
+      DuplicatesIndex@1000000005 : Record 66502;
+    BEGIN
+      AllObj.SETRANGE("Object Type",AllObj."Object Type"::Table);
+
+      IF TableID <> 0 THEN
+        AllObj.SETRANGE("Object ID",TableID);
+
+      IF AllObj.FINDSET THEN
+        REPEAT
+          RecordReference.OPEN(AllObj."Object ID");
+          IF RecordReference.FINDSET THEN
+            REPEAT
+              Field.SETFILTER(TableNo,FORMAT(RecordReference.NUMBER));
+              Field.SETRANGE(Class,Field.Class::Normal);
+              Field.SETRANGE(Type,Field.Type::Text);
+              IF FieldID <> 0 THEN
+                Field.SETRANGE("No.",FieldID);
+              IF Field.FINDSET THEN
+                REPEAT
+                  FieldReference := RecordReference.FIELD(Field."No.");
+                  IF FORMAT(FieldReference.VALUE) <> '' THEN
+                    IF NOT DuplicatesIndex.GET(FORMAT(RecordReference.RECORDID),Field.TableNo,Field."No.") THEN BEGIN
+                      DuplicatesIndex.INIT;
+                      DuplicatesIndex.Key := FORMAT(RecordReference.RECORDID);
+                      DuplicatesIndex.TableID := Field.TableNo;
+                      DuplicatesIndex.FieldID := Field."No.";
+                      DuplicatesIndex."Field Value" := FORMAT(FieldReference.VALUE);
+                      DuplicatesIndex."Encoded Value" := ConvertStringToPhonetic(FORMAT(FieldReference.VALUE));
+                      DuplicatesIndex."Information Type" := DeterminateInformationTypeByCaption(FieldReference.NAME);
+                      DuplicatesIndex.INSERT;
+                    END;
+                UNTIL Field.NEXT = 0;
+            UNTIL RecordReference.NEXT = 0;
+          RecordReference.CLOSE;
+        UNTIL AllObj.NEXT = 0;
+    END;
+
+    LOCAL PROCEDURE DeleteNullSignAfterFirstPlace@1000000004(InputString@1000000000 : Text) ResultString : Text;
+    BEGIN
+      ResultString := COPYSTR(InputString,1,1) + DELCHR(COPYSTR(InputString,2),'=','0');
+    END;
+
+    LOCAL PROCEDURE DeterminateInformationTypeByCaption@1000000005(InputString@1000000000 : Text) : Code[20];
+    BEGIN
+      InputString := UPPERCASE(InputString);
+
+      IF STRPOS(InputString,'NAME') <> 0 THEN
+        EXIT('NAME');
+
+      IF STRPOS(InputString,'ADDRESS') <> 0 THEN
+        EXIT('ADDRESS');
+
+      IF STRPOS(InputString,'MAIL') <> 0 THEN
+        EXIT('CONTACTINFORMATION');
+
+      EXIT('GENERAL');
+    END;
+
+    PROCEDURE AnalyseDuplicatesData@1000000006(TableID@1000000000 : Integer);
+    VAR
+      DuplicatesIndex@1000000001 : Record 66502;
+    BEGIN
+      IF TableID <> 0 THEN
+        DuplicatesIndex.SETRANGE(TableID,TableID);
+
+      IF DuplicatesIndex.FINDSET THEN
+        REPEAT
+          //AnalyseDuplicatesName(DuplicatesIndex.Key,DuplicatesIndex
+        UNTIL DuplicatesIndex.NEXT = 0;
+    END;
+
+    LOCAL PROCEDURE AnalyseDuplicatesName@1000000008(Key@1000000001 : Text[250];TableID@1000000002 : Integer;FieldID@1000000003 : Integer;EncodedValue@1000000004 : Text[80]) : Boolean;
+    VAR
+      DuplicatesIndex@1000000000 : Record 66502;
+    BEGIN
+      DuplicatesIndex.SETFILTER(Key,'<>%1');
+      DuplicatesIndex.SETRANGE(TableID,TableID);
+      DuplicatesIndex.SETRANGE(FieldID,FieldID);
+      DuplicatesIndex.SETRANGE("Information Type",'NAME');
+      DuplicatesIndex.SETFILTER("Encoded Value",'@*%1*',EncodedValue);
+
+      IF DuplicatesIndex.FINDSET THEN
+        REPEAT
+
+        UNTIL DuplicatesIndex.NEXT = 0;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

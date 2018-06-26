@@ -1,0 +1,100 @@
+OBJECT Page 66502 Duplicated Index Card
+{
+  OBJECT-PROPERTIES
+  {
+    Date=20.06.18;
+    Time=01:25:10;
+    Modified=Yes;
+    Version List=NAV STUFF;
+  }
+  PROPERTIES
+  {
+    ActionList=ACTIONS
+    {
+      { 1000000003;  ;ActionContainer;
+                      ActionContainerType=ActionItems }
+      { 1000000004;1 ;Action    ;
+                      Name=Search;
+                      OnAction=VAR
+                                 FuzzySearch@1000000000 : Codeunit 66501;
+                               BEGIN
+                               END;
+                                }
+    }
+  }
+  CONTROLS
+  {
+    { 1000000000;;Container;
+                ContainerType=ContentArea }
+
+    { 1000000001;1;Field  ;
+                Name=NAME;
+                SourceExpr=SEARCHNAME;
+                OnValidate=VAR
+                             DuplicatesIndex@1000000000 : Record 66502;
+                             FuzzySearch@1000000001 : Codeunit 66501;
+                           BEGIN
+                             DuplicatesIndex.SETFILTER("Encoded Value",STRSUBSTNO('@*%1*',FuzzySearch.ConvertStringToPhonetic(SEARCHNAME)));
+                             DuplicatesIndex.SETRANGE("Information Type",'NAME');
+                             PAGE.RUNMODAL(PAGE::"Duplicated Indexes",DuplicatesIndex);
+                           END;
+                            }
+
+    { 1000000005;1;Field  ;
+                Name=ADDRESS;
+                SourceExpr=SEARCHADDRESS;
+                OnValidate=VAR
+                             DuplicatesIndex@1000000001 : Record 66502;
+                             FuzzySearch@1000000000 : Codeunit 66501;
+                           BEGIN
+                             DuplicatesIndex.SETFILTER("Encoded Value",STRSUBSTNO('@*%1*',FuzzySearch.ConvertStringToPhonetic(SEARCHADDRESS)));
+                             DuplicatesIndex.SETRANGE("Information Type",'ADDRESS');
+                             PAGE.RUNMODAL(PAGE::"Duplicated Indexes",DuplicatesIndex);
+                           END;
+                            }
+
+    { 1000000006;1;Field  ;
+                Name=CONTACTINFORMATION;
+                SourceExpr=SEARCHCONTACTINFORMATION;
+                OnValidate=VAR
+                             DuplicatesIndex@1000000001 : Record 66502;
+                             FuzzySearch@1000000000 : Codeunit 66501;
+                           BEGIN
+                             DuplicatesIndex.SETFILTER("Encoded Value",STRSUBSTNO('@*%1*',FuzzySearch.ConvertStringToPhonetic(SEARCHCONTACTINFORMATION)));
+                             DuplicatesIndex.SETRANGE("Information Type",'CONTACTINFORMATION');
+                             PAGE.RUNMODAL(PAGE::"Duplicated Indexes",DuplicatesIndex);
+                           END;
+                            }
+
+    { 1000000007;1;Field  ;
+                Name=COMMONINFORMATION;
+                SourceExpr=SEACHCOMMONINFORMATION;
+                OnValidate=VAR
+                             DuplicatesIndex@1000000001 : Record 66502;
+                             FuzzySearch@1000000000 : Codeunit 66501;
+                           BEGIN
+                             DuplicatesIndex.SETFILTER("Encoded Value",STRSUBSTNO('@*%1*',FuzzySearch.ConvertStringToPhonetic(SEACHCOMMONINFORMATION)));
+                             DuplicatesIndex.SETRANGE("Information Type",'GENERAL');
+                             PAGE.RUNMODAL(PAGE::"Duplicated Indexes",DuplicatesIndex);
+                           END;
+                            }
+
+    { 1000000002;1;Part   ;
+                Name=SubPage;
+                PagePartID=Page66501;
+                PartType=Page }
+
+  }
+  CODE
+  {
+    VAR
+      SEARCHNAME@1000000000 : Text[250];
+      SEARCHADDRESS@1000000001 : Text;
+      SEARCHCONTACTINFORMATION@1000000002 : Text;
+      SEACHCOMMONINFORMATION@1000000003 : Text;
+
+    BEGIN
+    END.
+  }
+}
+
