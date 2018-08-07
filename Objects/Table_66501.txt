@@ -3,7 +3,7 @@ OBJECT Table 66501 Forbidden Signs
   OBJECT-PROPERTIES
   {
     Date=07.08.18;
-    Time=20:37:53;
+    Time=21:13:44;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -12,8 +12,14 @@ OBJECT Table 66501 Forbidden Signs
   }
   FIELDS
   {
-    { 1   ;   ;Sign                ;Text30         }
-    { 2   ;   ;Forbidden           ;Boolean        }
+    { 1   ;   ;Sign                ;Text30        ;CaptionML=[DEU=Zeichen;
+                                                              ENU=Sign;
+                                                              DES=Zeichen;
+                                                              DEA=Zeichen] }
+    { 2   ;   ;Sign is Forbidden   ;Boolean       ;CaptionML=[DEU=Verbotenes Zeichen;
+                                                              ENU=Forbidden Sign;
+                                                              DES=Verbotenes Zeichen;
+                                                              DEA=Verbotenes Zeichen] }
   }
   KEYS
   {

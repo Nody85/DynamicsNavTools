@@ -3,7 +3,7 @@ OBJECT Codeunit 66500 Nav Stuff
   OBJECT-PROPERTIES
   {
     Date=07.08.18;
-    Time=20:53:55;
+    Time=21:23:30;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -132,7 +132,7 @@ OBJECT Codeunit 66500 Nav Stuff
       StringPosition@1000000002 : Integer;
     BEGIN
       FOR StringPosition := 1 TO STRLEN(InputString) DO
-        IF ForbiddenSigns.GET(COPYSTR(InputString,StringPosition,1)) AND ForbiddenSigns.Forbidden THEN
+        IF ForbiddenSigns.GET(COPYSTR(InputString,StringPosition,1)) AND ForbiddenSigns."Sign is Forbidden" THEN
           EXIT(TRUE);
     END;
 
