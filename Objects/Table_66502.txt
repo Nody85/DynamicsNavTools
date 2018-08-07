@@ -2,8 +2,8 @@ OBJECT Table 66502 Duplicates Index
 {
   OBJECT-PROPERTIES
   {
-    Date=19.06.18;
-    Time=19:05:05;
+    Date=07.08.18;
+    Time=20:38:01;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -41,6 +41,9 @@ OBJECT Table 66502 Duplicates Index
   {
 
     BEGIN
+    {
+      https://github.com/Nody85/DynamicsNavTools
+    }
     END.
   }
 }

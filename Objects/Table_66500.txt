@@ -2,8 +2,8 @@ OBJECT Table 66500 NAV Stuff Setup
 {
   OBJECT-PROPERTIES
   {
-    Date=18.05.18;
-    Time=22:08:13;
+    Date=07.08.18;
+    Time=20:37:43;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -26,6 +26,9 @@ OBJECT Table 66500 NAV Stuff Setup
   {
 
     BEGIN
+    {
+      https://github.com/Nody85/DynamicsNavTools
+    }
     END.
   }
 }

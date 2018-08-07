@@ -2,8 +2,8 @@ OBJECT Codeunit 66501 Fuzzy Search
 {
   OBJECT-PROPERTIES
   {
-    Date=21.06.18;
-    Time=01:02:49;
+    Date=07.08.18;
+    Time=20:38:15;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -185,6 +185,9 @@ OBJECT Codeunit 66501 Fuzzy Search
     END;
 
     BEGIN
+    {
+      https://github.com/Nody85/DynamicsNavTools
+    }
     END.
   }
 }

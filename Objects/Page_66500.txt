@@ -2,8 +2,8 @@ OBJECT Page 66500 NAV Stuff
 {
   OBJECT-PROPERTIES
   {
-    Date=20.05.18;
-    Time=01:29:05;
+    Date=07.08.18;
+    Time=20:38:27;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -45,6 +45,9 @@ OBJECT Page 66500 NAV Stuff
       Text001@1000000000 : TextConst 'DEU=Logpfad w„hlen.;ENU=Select Logpath.;DES=Logpfad w„hlen.;DEA=Logpfad w„hlen.';
 
     BEGIN
+    {
+      https://github.com/Nody85/DynamicsNavTools
+    }
     END.
   }
 }

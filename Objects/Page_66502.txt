@@ -2,8 +2,8 @@ OBJECT Page 66502 Duplicated Index Card
 {
   OBJECT-PROPERTIES
   {
-    Date=20.06.18;
-    Time=01:25:10;
+    Date=07.08.18;
+    Time=20:38:44;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -94,6 +94,9 @@ OBJECT Page 66502 Duplicated Index Card
       SEACHCOMMONINFORMATION@1000000003 : Text;
 
     BEGIN
+    {
+      https://github.com/Nody85/DynamicsNavTools
+    }
     END.
   }
 }

@@ -2,8 +2,8 @@ OBJECT Table 66501 Forbidden Signs
 {
   OBJECT-PROPERTIES
   {
-    Date=20.05.18;
-    Time=02:20:57;
+    Date=07.08.18;
+    Time=20:37:53;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -26,6 +26,9 @@ OBJECT Table 66501 Forbidden Signs
   {
 
     BEGIN
+    {
+      https://github.com/Nody85/DynamicsNavTools
+    }
     END.
   }
 }

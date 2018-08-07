@@ -2,8 +2,8 @@ OBJECT Page 66501 Duplicated Indexes
 {
   OBJECT-PROPERTIES
   {
-    Date=19.06.18;
-    Time=19:06:36;
+    Date=07.08.18;
+    Time=20:38:36;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -47,6 +47,9 @@ OBJECT Page 66501 Duplicated Indexes
   {
 
     BEGIN
+    {
+      https://github.com/Nody85/DynamicsNavTools
+    }
     END.
   }
 }

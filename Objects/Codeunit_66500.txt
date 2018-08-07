@@ -2,8 +2,8 @@ OBJECT Codeunit 66500 Nav Stuff
 {
   OBJECT-PROPERTIES
   {
-    Date=18.06.18;
-    Time=12:55:47;
+    Date=07.08.18;
+    Time=20:38:08;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -213,6 +213,9 @@ OBJECT Codeunit 66500 Nav Stuff
     END;
 
     BEGIN
+    {
+      https://github.com/Nody85/DynamicsNavTools
+    }
     END.
   }
 }
