@@ -2,17 +2,23 @@ OBJECT Table 66501 Forbidden Signs
 {
   OBJECT-PROPERTIES
   {
-    Date=07.08.18;
-    Time=21:13:44;
+    Date=24.02.19;
+    Time=11:28:26;
     Modified=Yes;
     Version List=NAV STUFF;
   }
   PROPERTIES
   {
+    DataPerCompany=No;
+    LookupPageID=Page66503;
   }
   FIELDS
   {
-    { 1   ;   ;Sign                ;Text30        ;CaptionML=[DEU=Zeichen;
+    { 1   ;   ;Sign                ;Text30        ;OnValidate=BEGIN
+                                                                UNICode := Sign[1];
+                                                              END;
+
+                                                   CaptionML=[DEU=Zeichen;
                                                               ENU=Sign;
                                                               DES=Zeichen;
                                                               DEA=Zeichen] }
@@ -20,10 +26,16 @@ OBJECT Table 66501 Forbidden Signs
                                                               ENU=Forbidden Sign;
                                                               DES=Verbotenes Zeichen;
                                                               DEA=Verbotenes Zeichen] }
+    { 3   ;   ;UNICode             ;Integer       ;DataClassification=ToBeClassified;
+                                                   CaptionML=[DEU=UNICode;
+                                                              ENU=UNICode;
+                                                              DES=UNICode;
+                                                              DEA=UNICode] }
   }
   KEYS
   {
     {    ;Sign                                    ;Clustered=Yes }
+    {    ;UNICode                                  }
   }
   FIELDGROUPS
   {

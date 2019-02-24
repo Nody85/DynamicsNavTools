@@ -2,14 +2,15 @@ OBJECT Codeunit 66500 Nav Stuff
 {
   OBJECT-PROPERTIES
   {
-    Date=07.08.18;
-    Time=21:23:30;
+    Date=24.02.19;
+    Time=11:17:31;
     Modified=Yes;
     Version List=NAV STUFF;
   }
   PROPERTIES
   {
     OnRun=BEGIN
+            CheckTable(0,FALSE);
           END;
 
   }
@@ -120,7 +121,7 @@ OBJECT Codeunit 66500 Nav Stuff
       FOR StringPosition := 1 TO STRLEN(InputString) DO BEGIN
         IF NOT ForbiddenSigns.GET(COPYSTR(InputString,StringPosition,1)) THEN BEGIN
           ForbiddenSigns.INIT;
-          ForbiddenSigns.Sign := COPYSTR(InputString,StringPosition,1);
+          ForbiddenSigns.VALIDATE(Sign,COPYSTR(InputString,StringPosition,1));
           ForbiddenSigns.INSERT;
         END;
       END;

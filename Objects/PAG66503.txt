@@ -1,0 +1,41 @@
+OBJECT Page 66503 Forbidden Signs List
+{
+  OBJECT-PROPERTIES
+  {
+    Date=24.02.19;
+    Time=10:37:22;
+    Modified=Yes;
+    Version List=NAV STUFF;
+  }
+  PROPERTIES
+  {
+    SourceTable=Table66501;
+    PageType=List;
+  }
+  CONTROLS
+  {
+    { 1000000000;0;Container;
+                ContainerType=ContentArea }
+
+    { 1000000001;1;Group  ;
+                Name=Group;
+                GroupType=Repeater }
+
+    { 1000000002;2;Field  ;
+                SourceExpr=Sign }
+
+    { 1000000003;2;Field  ;
+                SourceExpr="Sign is Forbidden" }
+
+    { 1000000004;2;Field  ;
+                SourceExpr=UNICode }
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+
