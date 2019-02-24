@@ -2,8 +2,8 @@ OBJECT Table 66502 Duplicates Index
 {
   OBJECT-PROPERTIES
   {
-    Date=07.08.18;
-    Time=20:38:01;
+    Date=22.02.19;
+    Time=21:46:00;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -18,7 +18,7 @@ OBJECT Table 66502 Duplicates Index
   }
   FIELDS
   {
-    { 1   ;   ;Key                 ;Text250        }
+    { 1   ;   ;Key                 ;RecordID       }
     { 2   ;   ;TableID             ;Integer        }
     { 3   ;   ;FieldID             ;Integer        }
     { 4   ;   ;Field Value         ;Text250        }

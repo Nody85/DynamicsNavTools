@@ -2,19 +2,25 @@ OBJECT Codeunit 66501 Fuzzy Search
 {
   OBJECT-PROPERTIES
   {
-    Date=07.08.18;
-    Time=20:38:15;
+    Date=22.02.19;
+    Time=21:59:53;
     Modified=Yes;
     Version List=NAV STUFF;
   }
   PROPERTIES
   {
     OnRun=BEGIN
+            IndexTable(DATABASE::Vendor,0);
+            IndexTable(DATABASE::Customer,0);
+            IndexTable(DATABASE::Contact,0);
           END;
 
   }
   CODE
   {
+    VAR
+      NAVSTUFF001@1000000000 : TextConst 'DEU=Duplicat scan on Table %1 started.';
+      NAVSTUFF002@1000000001 : TextConst 'DEU=Duplicate scan on Table %1 finished.';
 
     PROCEDURE ConvertStringToPhonetic@1000000000(InputString@1000000000 : Text) ResultString : Text;
     VAR
@@ -98,6 +104,7 @@ OBJECT Codeunit 66501 Fuzzy Search
       FieldReference@1000000003 : FieldRef;
       Field@1000000004 : Record 2000000041;
       DuplicatesIndex@1000000005 : Record 66502;
+      NavStuff@1000000007 : Codeunit 66500;
     BEGIN
       AllObj.SETRANGE("Object Type",AllObj."Object Type"::Table);
 
@@ -107,7 +114,8 @@ OBJECT Codeunit 66501 Fuzzy Search
       IF AllObj.FINDSET THEN
         REPEAT
           RecordReference.OPEN(AllObj."Object ID");
-          IF RecordReference.FINDSET THEN
+          IF RecordReference.FINDSET THEN BEGIN
+            NavStuff.WriteLogFile(STRSUBSTNO(NAVSTUFF001,AllObj."Object ID"));
             REPEAT
               Field.SETFILTER(TableNo,FORMAT(RecordReference.NUMBER));
               Field.SETRANGE(Class,Field.Class::Normal);
@@ -118,9 +126,9 @@ OBJECT Codeunit 66501 Fuzzy Search
                 REPEAT
                   FieldReference := RecordReference.FIELD(Field."No.");
                   IF FORMAT(FieldReference.VALUE) <> '' THEN
-                    IF NOT DuplicatesIndex.GET(FORMAT(RecordReference.RECORDID),Field.TableNo,Field."No.") THEN BEGIN
+                    IF NOT DuplicatesIndex.GET(RecordReference.RECORDID,Field.TableNo,Field."No.") THEN BEGIN
                       DuplicatesIndex.INIT;
-                      DuplicatesIndex.Key := FORMAT(RecordReference.RECORDID);
+                      DuplicatesIndex.Key := RecordReference.RECORDID;
                       DuplicatesIndex.TableID := Field.TableNo;
                       DuplicatesIndex.FieldID := Field."No.";
                       DuplicatesIndex."Field Value" := FORMAT(FieldReference.VALUE);
@@ -130,7 +138,9 @@ OBJECT Codeunit 66501 Fuzzy Search
                     END;
                 UNTIL Field.NEXT = 0;
             UNTIL RecordReference.NEXT = 0;
-          RecordReference.CLOSE;
+            RecordReference.CLOSE;
+            NavStuff.WriteLogFile(STRSUBSTNO(NAVSTUFF002,AllObj."Object ID"));
+          END;
         UNTIL AllObj.NEXT = 0;
     END;
 
