@@ -1,0 +1,79 @@
+OBJECT Codeunit 66600 CompanySync Managment
+{
+  OBJECT-PROPERTIES
+  {
+    Date=18.07.19;
+    Time=13:26:36;
+    Modified=Yes;
+    Version List=TABLESYNC;
+  }
+  PROPERTIES
+  {
+    SingleInstance=Yes;
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      RoundTrip@1000000000 : Integer;
+
+    PROCEDURE SyncTable@1000000000(RecordID@1000000000 : RecordID;CurrentCompany@1000000007 : Text;TargetCompany@1000000001 : Text;Operation@1000000008 : Text);
+    VAR
+      RecordReferenceFrom@1000000002 : RecordRef;
+      RecordReferenceTo@1000000003 : RecordRef;
+      FieldReferenceFrom@1000000004 : FieldRef;
+      FieldReferenceTo@1000000005 : FieldRef;
+      Field@1000000006 : Record 2000000041;
+    BEGIN
+      IF (CurrentCompany = TargetCompany) AND (RoundTrip > 1)  THEN
+        EXIT;
+
+      MESSAGE(Operation + ' ' + COMPANYNAME);
+
+      RecordReferenceFrom.GET(RecordID);
+
+      RecordReferenceTo.OPEN(RecordID.TABLENO);
+      RecordReferenceTo.CHANGECOMPANY(TargetCompany);
+      RecordReferenceTo.SETPOSITION(RecordReferenceFrom.GETPOSITION(FALSE));
+
+      Field.SETRANGE(TableNo,RecordID.TABLENO);
+      IF Field.FINDSET THEN
+        REPEAT
+          FieldReferenceTo := RecordReferenceTo.FIELD(Field."No.");
+          FieldReferenceFrom := RecordReferenceFrom.FIELD(Field."No.");
+          FieldReferenceTo.VALUE := FieldReferenceFrom.VALUE;
+        UNTIL Field.NEXT = 0;
+
+      RoundTrip += 1;
+
+      //Dirty solution instead of If not get insert else modify for now
+      IF NOT RecordReferenceTo.INSERT(TRUE) THEN
+        RecordReferenceTo.MODIFY(TRUE);
+    END;
+
+    [EventSubscriber(Table,66600,OnAfterInsertEvent)]
+    LOCAL PROCEDURE TESTTABLESYNC_OnAfterInsertEvent@1000000005(VAR Rec@1000000000 : Record 66600;RunTrigger@1000000001 : Boolean);
+    BEGIN
+      IF NOT Rec.ISEMPTY AND RunTrigger THEN
+        SyncTable(Rec.RECORDID,Rec.CURRENTCOMPANY,'TEST2','INSERT');
+    END;
+
+    [EventSubscriber(Table,66600,OnAfterModifyEvent)]
+    LOCAL PROCEDURE TESTTABLESYNC_OnAfterModifyEvent@1000000008(VAR Rec@1000000000 : Record 66600;VAR xRec@1000000001 : Record 66600;RunTrigger@1000000002 : Boolean);
+    BEGIN
+      IF NOT Rec.ISEMPTY AND RunTrigger THEN
+        SyncTable(Rec.RECORDID,Rec.CURRENTCOMPANY,'TEST2','MODIFY');
+    END;
+
+    BEGIN
+    {
+      Prototype to Sync Data from COMPANY_A to COMPANY_B and trigger the triggers
+      Works also in DataPerCompany=No Tables
+      Is dangerous because Different Data in the Companys can be override if the Primarykey is the same
+    }
+    END.
+  }
+}
+

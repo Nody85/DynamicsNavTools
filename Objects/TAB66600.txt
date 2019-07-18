@@ -1,0 +1,39 @@
+OBJECT Table 66600 TESTTABLESYNC
+{
+  OBJECT-PROPERTIES
+  {
+    Date=18.07.19;
+    Time=12:06:33;
+    Modified=Yes;
+    Version List=TABLESYNC;
+  }
+  PROPERTIES
+  {
+    DataPerCompany=No;
+  }
+  FIELDS
+  {
+    { 1   ;   ;Code                ;Code10        ;DataClassification=ToBeClassified }
+    { 2   ;   ;Description         ;Text50        ;DataClassification=ToBeClassified }
+  }
+  KEYS
+  {
+    {    ;Code                                    ;Clustered=Yes }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+
+    BEGIN
+    {
+      Need 2 Companys to test
+
+      Source "TEST"
+      Target "TEST2"
+    }
+    END.
+  }
+}
+
