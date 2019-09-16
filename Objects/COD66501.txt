@@ -2,8 +2,8 @@ OBJECT Codeunit 66501 Fuzzy Search
 {
   OBJECT-PROPERTIES
   {
-    Date=22.02.19;
-    Time=21:59:53;
+    Date=16.09.19;
+    Time=15:01:26;
     Modified=Yes;
     Version List=NAV STUFF;
   }
@@ -51,7 +51,7 @@ OBJECT Codeunit 66501 Fuzzy Search
             ResultString += '9';
         END;
       END;
-      ResultString := EleminateDoubleSigns(ResultString);
+      ResultString := EliminateDoubleSigns(ResultString);
       EXIT(DeleteNullSignAfterFirstPlace(ResultString));
     END;
 
@@ -80,10 +80,10 @@ OBJECT Codeunit 66501 Fuzzy Search
             ResultString += '0';
         END;
       END;
-      ResultString := EleminateDoubleSigns(ResultString);
+      ResultString := EliminateDoubleSigns(ResultString);
     END;
 
-    LOCAL PROCEDURE EleminateDoubleSigns@1000000001(InputString@1000000000 : Text) ResultString : Text;
+    LOCAL PROCEDURE EliminateDoubleSigns@1000000001(InputString@1000000000 : Text) ResultString : Text;
     VAR
       i@1000000001 : Integer;
       LastSign@1000000002 : Text[1];
